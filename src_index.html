@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ludo Weekly Dashboard Preview Html</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+html,body{min-height:100%;margin:0;padding:0}
+body{font-family:'Montserrat',sans-serif;background:#0d0d0d;color:#fff}
+body.locked .slide,body.locked .dashboard-toolbar{display:none}
+*{box-sizing:border-box}
+.title-font{font-family:'Anton',sans-serif}
+.slide{min-height:100vh;padding:60px;background:linear-gradient(to bottom right,#0d0d0d,#1b1b1b);border-bottom:1px solid rgba(255,255,255,.08)}
+.card{background:rgba(255,255,255,.05);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:24px;transition:transform .25s ease,box-shadow .25s ease,background .25s ease;min-width:0;overflow:hidden;box-shadow:0 16px 35px rgba(0,0,0,.12)}
+.card:hover{transform:translateY(-3px);border-color:rgba(225,29,46,.35);box-shadow:0 26px 55px rgba(0,0,0,.16)}
+.section-icon{width:88px;height:88px;border-radius:24px;background:rgba(225,29,46,.2);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:28px}
+input{background:#1a1a1a;border:1px solid rgba(255,255,255,.1);padding:12px 14px;border-radius:12px;width:100%;max-width:100%;min-width:0;text-align:right;color:white;font-weight:700;font-size:18px}
+input:disabled{opacity:1;color:#f9fafb;background:rgba(255,255,255,.04);cursor:default}
+input:focus{outline:2px solid rgba(241,146,46,.9);outline-offset:2px}
+input::selection{background:rgba(241,146,46,.25)}
+.input-disabled{opacity:.65}
+[contenteditable="false"]{outline:none}
+.admin-only{display:none}
+body.admin-mode .admin-only{display:block}
+.currency-input{position:relative;min-width:0;max-width:100%;display:inline-flex;width:100%}
+.currency-input::before{content:'Rp';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#9ca3af;font-weight:700;pointer-events:none}
+.currency-input input{padding-left:46px;min-width:0;position:relative;z-index:1;cursor:text;width:100%}
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+.target-revenue-input input{font-size:38px;padding:20px 24px 20px 56px;border-radius:18px}
+.target-revenue-input::before{font-size:22px;left:22px}
+.auto-number{font-size:28px;font-weight:700;margin-top:12px}
+.auto-number,[id^="kpi"],#grandRevenueMain,#grandPos,#grandNonPos,#grandBill,#grandAvg,#categoryGrand,[id$="Total"]{max-width:100%;overflow-wrap:anywhere;word-break:break-word;line-height:1.12}
+table{max-width:100%;display:block;overflow-x:auto;border-collapse:collapse}
+table, .sales-item-table table{width:100%}
+th,td{padding:14px}
+th{font-size:13px;text-transform:uppercase;color:#9ca3af;border-bottom:1px solid rgba(255,255,255,.12)}
+td{border-bottom:1px solid rgba(255,255,255,.08)}
+tr:last-child td{border-bottom:none}
+td,th{min-width:0;overflow-wrap:anywhere}
+th:nth-child(2),td:nth-child(2){white-space:nowrap;text-align:center;width:76px}
+td:nth-child(2){overflow-wrap:normal;word-break:normal}
+tbody{width:100%}
+.slide>h2{max-width:1180px}
+.slide>.card,.slide>.grid{max-width:1180px;margin-left:auto;margin-right:auto}
+.slide>.section-icon,.slide>h2{margin-left:auto;margin-right:auto}
+.manager-result{border-color:rgba(225,29,46,.55);background:linear-gradient(180deg,rgba(225,29,46,.12),rgba(255,255,255,.04))}
+.result-card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.11)}
+.result-card.primary{background:rgba(225,29,46,.18);border-color:rgba(225,29,46,.42)}
+.result-card.positive{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.32)}
+.result-card.warning{background:rgba(250,204,21,.11);border-color:rgba(250,204,21,.3)}
+.result-value{font-size:30px;font-weight:700;line-height:1.1;overflow-wrap:anywhere}
+.result-label{color:#9ca3af;font-size:12px;text-transform:uppercase;margin-bottom:8px}
+.owner-status{font-size:28px;font-weight:700;line-height:1.15}
+.subsection-header{background:rgba(225,29,46,.13);border:1px solid rgba(225,29,46,.35);border-radius:18px;padding:18px 20px;margin-bottom:22px}
+.subsection-kicker{color:#f87171;text-transform:uppercase;font-size:12px;letter-spacing:2px;margin-bottom:6px}
+.subsection-title{font-size:28px;font-weight:700;line-height:1.1}
+.subsection-note{color:#9ca3af;font-size:14px;margin-top:8px}
+.week-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.week-badge{background:rgba(225,29,46,.18);border:1px solid rgba(225,29,46,.35);color:#fca5a5;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;white-space:nowrap}
+.sales-item-table table{display:table;width:100%;overflow:visible}
+.sales-item-table th{white-space:nowrap}
+.sales-summary-pos,.sales-summary-nonpos{background:linear-gradient(180deg,rgba(225,29,46,.13),rgba(255,255,255,.04))}
+.login-gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(13,13,13,.96);padding:20px}
+.login-panel{width:min(420px,100%);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px}
+.login-panel input{text-align:left}
+.login-error{min-height:22px;color:#f87171;font-size:14px;margin-top:10px}
+.dashboard-toolbar{position:fixed;left:18px;right:18px;bottom:18px;z-index:80;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;box-shadow:0 18px 40px rgba(0,0,0,.22);backdrop-filter:blur(14px);padding:14px;border-radius:18px;background:rgba(15,15,15,.92)}
+.toolbar-button,.login-button{background:#e11d2e;color:#fff;border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;transition:transform .18s ease,background .18s ease}
+.toolbar-button.secondary{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15)}
+.toolbar-button:focus-visible,.login-button:focus-visible{outline:2px solid rgba(248,113,113,.9);outline-offset:3px}
+.toolbar-button:hover,.login-button:hover{transform:translateY(-1px);background:#fb7185}
+.toolbar-button.secondary{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15)}
+.period-input{display:inline-block;width:auto;min-width:150px;text-align:left;font-size:14px;padding:6px 8px;border-radius:8px;margin-left:6px}
+@media print{
+  .login-gate,.dashboard-toolbar{display:none!important}
+  .slide{page-break-after:always}
+  body{background:#0d0d0d!important}
+}
+@media (max-width:640px){
+  body{font-size:14px}
+  .slide{padding:20px 12px}
+  .slide>.card,.slide>.grid{width:100%}
+  .card{padding:14px;border-radius:14px}
+  .card:hover{transform:none}
+  .section-icon{width:58px;height:58px;border-radius:16px;font-size:28px;margin-bottom:16px}
+  .title-font,.text-6xl{font-size:30px!important;line-height:1.05!important;text-align:center}
+  .text-5xl{font-size:30px!important;line-height:1.05!important;text-align:center}
+  .text-4xl{font-size:24px!important;line-height:1.1!important}
+  .text-3xl{font-size:21px!important;line-height:1.15!important}
+  .text-2xl{font-size:20px!important;line-height:1.18!important}
+  input{font-size:16px;padding:11px 12px}
+  .currency-input::before{left:10px;font-size:13px}
+  .currency-input input{padding-left:34px}
+  .target-revenue-input input{font-size:26px;padding:16px 14px 16px 42px;border-radius:14px}
+  .target-revenue-input::before{font-size:16px;left:14px}
+  .auto-number{font-size:22px;line-height:1.12}
+  #grandRevenueMain,#categoryGrand{font-size:30px!important;line-height:1.08!important}
+  table{border:1px solid rgba(255,255,255,.08);border-radius:12px}
+  td,th{padding:10px!important;white-space:normal}
+  th{font-size:11px;text-transform:uppercase;color:#9ca3af}
+  th:nth-child(2),td:nth-child(2){width:58px;min-width:58px;max-width:58px;padding-left:6px!important;padding-right:6px!important;white-space:nowrap}
+  td:nth-child(2){font-size:15px;text-align:center}
+  tr{border-bottom:1px solid rgba(255,255,255,.07)}
+  tr:last-child{border-bottom:0}
+  .marketing-tracker{border-color:rgba(225,29,46,.45)}
+  .marketing-tracker table{display:block;overflow:visible}
+  .marketing-tracker thead{display:none}
+  .marketing-tracker tbody{display:grid;gap:12px}
+  .marketing-tracker tr{display:block;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px}
+  .marketing-tracker td{display:grid;grid-template-columns:88px minmax(0,1fr);gap:10px;align-items:center;padding:8px 0!important}
+  .marketing-tracker td::before{content:attr(data-label);color:#9ca3af;font-size:11px;text-transform:uppercase;font-weight:700;letter-spacing:.02em}
+  .marketing-tracker td:first-child{grid-template-columns:1fr;font-size:18px;font-weight:700;color:#f87171;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:10px!important;margin-bottom:4px}
+  .marketing-tracker td:first-child::before{display:none}
+  .manager-result .grid{gap:12px}
+  .result-value{font-size:24px}
+  .owner-status{font-size:24px}
+  .subsection-header{padding:16px;border-radius:14px;text-align:center}
+  .subsection-title{font-size:24px}
+  .subsection-note{font-size:13px}
+  .week-title{align-items:flex-start;margin-bottom:14px}
+  .week-badge{font-size:11px;padding:5px 9px}
+  .sales-item-table table{display:table;min-width:520px}
+  .sales-item-table th:first-child,.sales-item-table td:first-child{min-width:150px}
+  .sales-item-table th:nth-child(3),.sales-item-table td:nth-child(3){min-width:120px}
+  .sales-item-table th:nth-child(4),.sales-item-table td:nth-child(4){min-width:120px}
+  .dashboard-toolbar{position:static;padding:12px;display:grid;grid-template-columns:1fr 1fr;background:#0d0d0d}
+  .toolbar-button{width:100%;padding:11px 10px}
+  .period-input{display:block;margin:8px auto 0;min-width:0;width:170px;text-align:center}
+}
+</style>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBUbacTV7r03vS-kD_1Xyj3I99-byp29IU",
+  authDomain: "ludo-dashboard-d183f.firebaseapp.com",
+  projectId: "ludo-dashboard-d183f",
+  storageBucket: "ludo-dashboard-d183f.firebasestorage.app",
+  messagingSenderId: "314501216876",
+  appId: "1:314501216876:web:06d7f572116502dc5c7649"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.firebaseDB = db;
+window.firebaseDoc = doc;
+window.firebaseSetDoc = setDoc;
+window.firebaseOnSnapshot = onSnapshot;
+</script>
+
+</head>
+<body class="locked">
+
+<div class="login-gate" id="loginGate">
+<div class="login-panel">
+<div class="text-red-400 uppercase tracking-[3px] text-sm mb-3">Confidential Report</div>
+<div class="text-3xl font-bold mb-3">Login Dashboard</div>
+<div class="text-gray-400 text-sm mb-5" id="loginHint">Masukkan passcode untuk membuka report.</div>
+<input type="password" id="loginPasscode" data-ignore-save="true" placeholder="Passcode">
+<button class="login-button mt-4 w-full" type="button" onclick="loginDashboard()">Login</button>
+<div class="login-error" id="loginError"></div>
+</div>
+</div>
+
+<div class="dashboard-toolbar">
+<button class="toolbar-button secondary" type="button" onclick="exportDashboardExcel()">Export Excel</button>
+<button class="toolbar-button" type="button" onclick="exportDashboardPDF()">Export PDF</button>
+</div>
+
+<section class="slide">
+<div class="section-icon">📊</div>
+<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-10 gap-4">
+<div>
+<h1 class="title-font text-6xl">RINGKASAN EKSEKUTIF</h1>
+<div class="text-gray-500 mt-2 tracking-[2px] uppercase text-sm">Report Period : <input class="period-input" id="reportPeriod" data-text-input="true" value="May 2026"></div>
+</div>
+<div class="text-right text-gray-500 text-sm">
+<div>Confidential Internal Report</div>
+<div contenteditable="true" id="lastUpdatedText">Last Updated : -</div>
+</div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="card text-center">
+<div class="text-gray-400 uppercase text-xs mb-3">Revenue Achievement</div>
+<div class="flex items-center justify-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span><div class="text-4xl font-bold" id="kpiRevenue">0%</div></div>
+</div>
+
+<div class="card text-center">
+<div class="text-gray-400 uppercase text-xs mb-3">Total Revenue</div>
+<div class="flex items-center justify-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span><div class="text-4xl font-bold" id="kpiTotalRevenue">Rp 0</div></div>
+</div>
+
+<div class="card text-center">
+<div class="text-gray-400 uppercase text-xs mb-3">Total Bill Collection</div>
+<div class="flex items-center justify-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-500"></span><div class="text-4xl font-bold" id="kpiBill">0</div></div>
+</div>
+
+<div class="card text-center">
+<div class="text-gray-400 uppercase text-xs mb-3">AVG Bill Monthly</div>
+<div class="flex items-center justify-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span><div class="text-4xl font-bold" id="kpiAvg">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card mb-8">
+<div class="text-gray-400 uppercase mb-4">Target Revenue Bulanan</div>
+<div class="currency-input target-revenue-input">
+<input type="number" id="targetRevenue" value="0" oninput="calculateRevenue()">
+</div>
+</div>
+
+<div class="grid grid-cols-1 gap-6">
+
+<div class="card">
+<div class="text-xl font-bold mb-6">Revenue Minggu 1</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+<div class="card"><div class="text-sm text-gray-400 mb-2">Revenue POS</div><div class="currency-input"><input type="number" id="pos1" value="0" oninput="calculateRevenue()"></div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Revenue Non POS</div><div class="currency-input"><input type="number" id="nonpos1" value="0" oninput="calculateRevenue()"></div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Total Revenue</div><div class="auto-number" id="total1">Rp 0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Bill Collection</div><input type="number" id="bill1" value="0" oninput="calculateRevenue()"></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">AVG Bill</div><div class="auto-number" id="avg1">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card">
+<div class="text-xl font-bold mb-6">Revenue Minggu 2</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+<div class="card"><div class="text-sm text-gray-400 mb-2">Revenue POS</div><div class="currency-input"><input type="number" id="pos2" value="0" oninput="calculateRevenue()"></div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Revenue Non POS</div><div class="currency-input"><input type="number" id="nonpos2" value="0" oninput="calculateRevenue()"></div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Total Revenue</div><div class="auto-number" id="total2">Rp 0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Bill Collection</div><input type="number" id="bill2" value="0" oninput="calculateRevenue()"></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">AVG Bill</div><div class="auto-number" id="avg2">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card">
+<div class="text-xl font-bold mb-6">Revenue Minggu 3</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+<div class="card"><div class="text-sm text-gray-400 mb-2">Revenue POS</div><div class="currency-input"><input type="number" id="pos3" value="0" oninput="calculateRevenue()"></div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Revenue Non POS</div><div class="currency-input"><input type="number" id="nonpos3" value="0" oninput="calculateRevenue()"></div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Total Revenue</div><div class="auto-number" id="total3">Rp 0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Bill Collection</div><input type="number" id="bill3" value="0" oninput="calculateRevenue()"></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">AVG Bill</div><div class="auto-number" id="avg3">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card">
+<div class="text-xl font-bold mb-6">Revenue Minggu 4</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+<div class="card"><div class="text-sm text-gray-400 mb-2">Revenue POS</div><div class="currency-input"><input type="number" id="pos4" value="0" oninput="calculateRevenue()"></div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Revenue Non POS</div><div class="currency-input"><input type="number" id="nonpos4" value="0" oninput="calculateRevenue()"></div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Total Revenue</div><div class="auto-number" id="total4">Rp 0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Bill Collection</div><input type="number" id="bill4" value="0" oninput="calculateRevenue()"></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">AVG Bill</div><div class="auto-number" id="avg4">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card border-2 border-red-500">
+<div class="text-center mb-6">
+<div class="text-red-400 uppercase text-sm">Grand Total Revenue</div>
+<div class="text-6xl font-bold mt-4" id="grandRevenueMain">Rp 0</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="card text-center"><div class="text-gray-400 text-xs uppercase">Total Revenue POS</div><div class="text-3xl font-bold mt-3" id="grandPos">Rp 0</div></div>
+<div class="card text-center"><div class="text-gray-400 text-xs uppercase">Total Revenue Non POS</div><div class="text-3xl font-bold mt-3" id="grandNonPos">Rp 0</div></div>
+<div class="card text-center"><div class="text-gray-400 text-xs uppercase">Grand Total Bill</div><div class="text-3xl font-bold mt-3" id="grandBill">0</div></div>
+<div class="card text-center"><div class="text-gray-400 text-xs uppercase">AVG Bill Monthly</div><div class="text-3xl font-bold mt-3" id="grandAvg">Rp 0</div></div>
+</div>
+</div>
+
+</section>
+
+<section class="slide">
+<div class="section-icon">💰</div>
+<h2 class="title-font text-5xl mb-10">PERFORMA PENJUALAN</h2>
+
+<div class="card mb-8">
+<div class="text-xl font-bold mb-6">Sales By Category - Minggu 1</div>
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-gray-700">
+<th class="p-4">Category</th>
+<th class="p-4">Sales</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="p-4">Food</td><td class="p-4"><div class="currency-input"><input type="number" id="food1" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Beverages</td><td class="p-4"><div class="currency-input"><input type="number" id="bev1" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Package Promo</td><td class="p-4"><div class="currency-input"><input type="number" id="promo1" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Compliment</td><td class="p-4"><div class="currency-input"><input type="number" id="comp1" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Discount</td><td class="p-4"><div class="currency-input"><input type="number" id="disc1" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Voucher</td><td class="p-4"><div class="currency-input"><input type="number" id="vouch1" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Event MICE</td><td class="p-4"><div class="currency-input"><input type="number" id="mice1" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Nobar Ticketing</td><td class="p-4"><div class="currency-input"><input type="number" id="nobar1" value="0" oninput="calculateCategory()"></div></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8">
+<div class="text-xl font-bold mb-6">Sales By Category - Minggu 2</div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4">Food</td><td class="p-4"><div class="currency-input"><input type="number" id="food2" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Beverages</td><td class="p-4"><div class="currency-input"><input type="number" id="bev2" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Package Promo</td><td class="p-4"><div class="currency-input"><input type="number" id="promo2" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Compliment</td><td class="p-4"><div class="currency-input"><input type="number" id="comp2" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Discount</td><td class="p-4"><div class="currency-input"><input type="number" id="disc2" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Voucher</td><td class="p-4"><div class="currency-input"><input type="number" id="vouch2" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Event MICE</td><td class="p-4"><div class="currency-input"><input type="number" id="mice2" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Nobar Ticketing</td><td class="p-4"><div class="currency-input"><input type="number" id="nobar2" value="0" oninput="calculateCategory()"></div></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8">
+<div class="text-xl font-bold mb-6">Sales By Category - Minggu 3</div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4">Food</td><td class="p-4"><div class="currency-input"><input type="number" id="food3" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Beverages</td><td class="p-4"><div class="currency-input"><input type="number" id="bev3" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Package Promo</td><td class="p-4"><div class="currency-input"><input type="number" id="promo3" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Compliment</td><td class="p-4"><div class="currency-input"><input type="number" id="comp3" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Discount</td><td class="p-4"><div class="currency-input"><input type="number" id="disc3" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Voucher</td><td class="p-4"><div class="currency-input"><input type="number" id="vouch3" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Event MICE</td><td class="p-4"><div class="currency-input"><input type="number" id="mice3" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Nobar Ticketing</td><td class="p-4"><div class="currency-input"><input type="number" id="nobar3" value="0" oninput="calculateCategory()"></div></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8">
+<div class="text-xl font-bold mb-6">Sales By Category - Minggu 4</div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4">Food</td><td class="p-4"><div class="currency-input"><input type="number" id="food4" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Beverages</td><td class="p-4"><div class="currency-input"><input type="number" id="bev4" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Package Promo</td><td class="p-4"><div class="currency-input"><input type="number" id="promo4" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Compliment</td><td class="p-4"><div class="currency-input"><input type="number" id="comp4" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Discount</td><td class="p-4"><div class="currency-input"><input type="number" id="disc4" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Voucher</td><td class="p-4"><div class="currency-input"><input type="number" id="vouch4" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Event MICE</td><td class="p-4"><div class="currency-input"><input type="number" id="mice4" value="0" oninput="calculateCategory()"></div></td></tr>
+<tr><td class="p-4">Nobar Ticketing</td><td class="p-4"><div class="currency-input"><input type="number" id="nobar4" value="0" oninput="calculateCategory()"></div></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card border-2 border-red-500">
+<div class="text-center mb-6">
+<div class="text-red-400 uppercase text-sm">Grand Total Sales By Category</div>
+<div class="text-6xl font-bold mt-4" id="categoryGrand">Rp 0</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="card"><div class="text-gray-400 text-xs uppercase mb-2">Food Total</div><div class="text-3xl font-bold" id="foodTotal">Rp 0</div></div>
+<div class="card"><div class="text-gray-400 text-xs uppercase mb-2">Beverages Total</div><div class="text-3xl font-bold" id="bevTotal">Rp 0</div></div>
+<div class="card"><div class="text-gray-400 text-xs uppercase mb-2">Package Promo Total</div><div class="text-3xl font-bold" id="promoTotal">Rp 0</div></div>
+<div class="card"><div class="text-gray-400 text-xs uppercase mb-2">Compliment Total</div><div class="text-3xl font-bold" id="compTotal">Rp 0</div></div>
+<div class="card"><div class="text-gray-400 text-xs uppercase mb-2">Discount Total</div><div class="text-3xl font-bold" id="discTotal">Rp 0</div></div>
+<div class="card"><div class="text-gray-400 text-xs uppercase mb-2">Voucher Total</div><div class="text-3xl font-bold" id="vouchTotal">Rp 0</div></div>
+<div class="card"><div class="text-gray-400 text-xs uppercase mb-2">Event MICE Total</div><div class="text-3xl font-bold" id="miceTotal">Rp 0</div></div>
+<div class="card"><div class="text-gray-400 text-xs uppercase mb-2">Nobar Ticketing Total</div><div class="text-3xl font-bold" id="nobarTotal">Rp 0</div></div>
+</div>
+</div>
+
+</section>
+
+<section class="slide">
+<div class="section-icon">🍔</div>
+<h2 class="title-font text-5xl mb-10">PERFORMA SALES BY ITEM</h2>
+
+<div class="subsection-header">
+<div class="subsection-kicker">POS Sales Item</div>
+<div class="subsection-title">Top Item Sold POS</div>
+<div class="subsection-note">Breakdown item yang masuk dari POS per minggu.</div>
+</div>
+
+<div class="card mb-8 sales-item-table">
+<div class="week-title"><div class="text-xl font-bold">Top 5 Item Sold</div><div class="week-badge">Minggu 1 · POS</div></div>
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-gray-700">
+<th class="p-4">Item</th>
+<th class="p-4">Qty</th>
+<th class="p-4">Item Price</th>
+<th class="p-4">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="p-4" contenteditable="true">Item 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 4</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 5</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8 sales-item-table">
+<div class="week-title"><div class="text-xl font-bold">Top 5 Item Sold</div><div class="week-badge">Minggu 2 · POS</div></div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Item 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 4</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 5</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8 sales-item-table">
+<div class="week-title"><div class="text-xl font-bold">Top 5 Item Sold</div><div class="week-badge">Minggu 3 · POS</div></div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Item 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 4</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 5</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8 sales-item-table">
+<div class="week-title"><div class="text-xl font-bold">Top 5 Item Sold</div><div class="week-badge">Minggu 4 · POS</div></div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Item 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 4</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Item 5</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="subsection-header">
+<div class="subsection-kicker">Non POS Sales Item</div>
+<div class="subsection-title">Top Item Sold Non POS</div>
+<div class="subsection-note">Breakdown item Non POS per minggu. Total otomatis dari Qty x Item Price.</div>
+</div>
+
+<div class="card mb-8 sales-item-table">
+<div class="week-title"><div class="text-xl font-bold">Top 5 Item Sold</div><div class="week-badge">Minggu 1 · Non POS</div></div>
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-gray-700">
+<th class="p-4">Item</th>
+<th class="p-4">Qty</th>
+<th class="p-4">Item Price</th>
+<th class="p-4">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="p-4" contenteditable="true">Non POS Item 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 4</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 5</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8 sales-item-table">
+<div class="week-title"><div class="text-xl font-bold">Top 5 Item Sold</div><div class="week-badge">Minggu 2 · Non POS</div></div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Non POS Item 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 4</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 5</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8 sales-item-table">
+<div class="week-title"><div class="text-xl font-bold">Top 5 Item Sold</div><div class="week-badge">Minggu 3 · Non POS</div></div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Non POS Item 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 4</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 5</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8 sales-item-table">
+<div class="week-title"><div class="text-xl font-bold">Top 5 Item Sold</div><div class="week-badge">Minggu 4 · Non POS</div></div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Non POS Item 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 4</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+<tr><td class="p-4" contenteditable="true">Non POS Item 5</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">Rp 0</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card border-2 border-red-500 mt-10 sales-summary-pos">
+<div class="text-center mb-8">
+<div class="text-red-400 uppercase tracking-[3px] text-sm">Kesimpulan Performance Product</div>
+<h3 class="text-5xl font-bold mt-4">TOP 3 SALES BY ITEM POS</h3>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="card text-center min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Top 1 Product</div>
+<div class="text-3xl font-bold mt-6" contenteditable="true">Nama Product</div>
+<div class="text-red-400 text-xl mt-4" contenteditable="true">Rp 0</div>
+<div class="text-gray-500 mt-3" contenteditable="true">Food / Beverage</div>
+</div>
+
+<div class="card text-center min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Top 2 Product</div>
+<div class="text-3xl font-bold mt-6" contenteditable="true">Nama Product</div>
+<div class="text-red-400 text-xl mt-4" contenteditable="true">Rp 0</div>
+<div class="text-gray-500 mt-3" contenteditable="true">Food / Beverage</div>
+</div>
+
+<div class="card text-center min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Top 3 Product</div>
+<div class="text-3xl font-bold mt-6" contenteditable="true">Nama Product</div>
+<div class="text-red-400 text-xl mt-4" contenteditable="true">Rp 0</div>
+<div class="text-gray-500 mt-3" contenteditable="true">Food / Beverage</div>
+</div>
+</div>
+</div>
+
+<div class="card border-2 border-red-500 mt-10 sales-summary-nonpos">
+<div class="text-center mb-8">
+<div class="text-red-400 uppercase tracking-[3px] text-sm">Kesimpulan Performance Product Non POS</div>
+<h3 class="text-5xl font-bold mt-4">TOP 3 SALES BY ITEM NON POS</h3>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="card text-center min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Top 1 Non POS Product</div>
+<div class="text-3xl font-bold mt-6" contenteditable="false">Nama Product</div>
+<div class="text-red-400 text-xl mt-4" contenteditable="false">Rp 0</div>
+<div class="text-gray-500 mt-3" contenteditable="false">Qty 0</div>
+</div>
+
+<div class="card text-center min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Top 2 Non POS Product</div>
+<div class="text-3xl font-bold mt-6" contenteditable="false">Nama Product</div>
+<div class="text-red-400 text-xl mt-4" contenteditable="false">Rp 0</div>
+<div class="text-gray-500 mt-3" contenteditable="false">Qty 0</div>
+</div>
+
+<div class="card text-center min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Top 3 Non POS Product</div>
+<div class="text-3xl font-bold mt-6" contenteditable="false">Nama Product</div>
+<div class="text-red-400 text-xl mt-4" contenteditable="false">Rp 0</div>
+<div class="text-gray-500 mt-3" contenteditable="false">Qty 0</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="slide">
+<div class="section-icon">📝</div>
+<h2 class="title-font text-5xl mb-10">LAPORAN / CASE / ISSUE OPERASIONAL</h2>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Laporan Operasional - Minggu 1</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Floor Waiter</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Cashier</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Bar Staff</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Security</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Cleaning Service</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+</div>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Laporan Operasional - Minggu 2</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Floor Waiter</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Cashier</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Bar Staff</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Security</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Cleaning Service</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+</div>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Laporan Operasional - Minggu 3</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Floor Waiter</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Cashier</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Bar Staff</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Security</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Cleaning Service</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+</div>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Laporan Operasional - Minggu 4</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Floor Waiter</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Cashier</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Bar Staff</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Security</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+<div class="card min-h-[260px]"><h3 class="text-2xl font-bold mb-4">Cleaning Service</h3><div contenteditable="true" class="text-gray-300 min-h-[140px]"></div></div>
+</div>
+</div>
+
+<div class="card border-2 border-red-500 mt-10">
+<div class="text-center mb-6">
+<div class="text-red-400 uppercase tracking-[3px] text-sm">Kesimpulan Operasional Bulanan</div>
+<h3 class="text-5xl font-bold mt-4">OPERATIONAL SUMMARY</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Biggest Issue</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Best Improvement</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Action Plan Next Month</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+</div>
+</div>
+</section>
+
+<section class="slide">
+<div class="section-icon">📣</div>
+<h2 class="title-font text-5xl mb-10">MARKETING INSIGHT & PERFORMANCE</h2>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Marketing Performance - Minggu 1</div>
+<div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
+<div class="card"><div class="text-sm text-gray-400 mb-2">Instagram Reach</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Instagram Engagement</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Content Views</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Reservation Leads</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Community Traffic</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Ads Spending</div><div class="text-3xl font-bold" contenteditable="true">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Marketing Performance - Minggu 2</div>
+<div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
+<div class="card"><div class="text-sm text-gray-400 mb-2">Instagram Reach</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Instagram Engagement</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Content Views</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Reservation Leads</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Community Traffic</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Ads Spending</div><div class="text-3xl font-bold" contenteditable="true">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Marketing Performance - Minggu 3</div>
+<div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
+<div class="card"><div class="text-sm text-gray-400 mb-2">Instagram Reach</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Instagram Engagement</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Content Views</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Reservation Leads</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Community Traffic</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Ads Spending</div><div class="text-3xl font-bold" contenteditable="true">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Marketing Performance - Minggu 4</div>
+<div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
+<div class="card"><div class="text-sm text-gray-400 mb-2">Instagram Reach</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Instagram Engagement</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Content Views</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Reservation Leads</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Community Traffic</div><div class="text-3xl font-bold" contenteditable="true">0</div></div>
+<div class="card"><div class="text-sm text-gray-400 mb-2">Ads Spending</div><div class="text-3xl font-bold" contenteditable="true">Rp 0</div></div>
+</div>
+</div>
+
+<div class="card mb-8 border border-red-500/40 marketing-tracker">
+<div class="text-2xl font-bold mb-2">Marketing Effectiveness Tracker</div>
+<div class="text-gray-400 text-sm mb-6">Input angka utama per minggu. Hasil evaluasi otomatis muncul di bawah untuk monitoring manager.</div>
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-gray-700">
+<th class="p-4">Week</th>
+<th class="p-4">Reach</th>
+<th class="p-4">Engagement</th>
+<th class="p-4">Leads</th>
+<th class="p-4">Ads Spend</th>
+<th class="p-4">Revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="p-4" data-label="Week">W1</td>
+<td class="p-4" data-label="Reach"><input type="number" id="mktReach1" value="25000"></td>
+<td class="p-4" data-label="Engagement"><input type="number" id="mktEngagement1" value="1200"></td>
+<td class="p-4" data-label="Leads"><input type="number" id="mktLeads1" value="80"></td>
+<td class="p-4" data-label="Ads Spend"><div class="currency-input"><input type="number" id="mktSpend1" value="750000"></div></td>
+<td class="p-4" data-label="Revenue"><div class="currency-input"><input type="number" id="mktRevenue1" value="6000000"></div></td>
+</tr>
+<tr>
+<td class="p-4" data-label="Week">W2</td>
+<td class="p-4" data-label="Reach"><input type="number" id="mktReach2" value="18000"></td>
+<td class="p-4" data-label="Engagement"><input type="number" id="mktEngagement2" value="950"></td>
+<td class="p-4" data-label="Leads"><input type="number" id="mktLeads2" value="45"></td>
+<td class="p-4" data-label="Ads Spend"><div class="currency-input"><input type="number" id="mktSpend2" value="0"></div></td>
+<td class="p-4" data-label="Revenue"><div class="currency-input"><input type="number" id="mktRevenue2" value="2500000"></div></td>
+</tr>
+<tr>
+<td class="p-4" data-label="Week">W3</td>
+<td class="p-4" data-label="Reach"><input type="number" id="mktReach3" value="8000"></td>
+<td class="p-4" data-label="Engagement"><input type="number" id="mktEngagement3" value="420"></td>
+<td class="p-4" data-label="Leads"><input type="number" id="mktLeads3" value="30"></td>
+<td class="p-4" data-label="Ads Spend"><div class="currency-input"><input type="number" id="mktSpend3" value="150000"></div></td>
+<td class="p-4" data-label="Revenue"><div class="currency-input"><input type="number" id="mktRevenue3" value="4500000"></div></td>
+</tr>
+<tr>
+<td class="p-4" data-label="Week">W4</td>
+<td class="p-4" data-label="Reach"><input type="number" id="mktReach4" value="12000"></td>
+<td class="p-4" data-label="Engagement"><input type="number" id="mktEngagement4" value="600"></td>
+<td class="p-4" data-label="Leads"><input type="number" id="mktLeads4" value="55"></td>
+<td class="p-4" data-label="Ads Spend"><div class="currency-input"><input type="number" id="mktSpend4" value="300000"></div></td>
+<td class="p-4" data-label="Revenue"><div class="currency-input"><input type="number" id="mktRevenue4" value="5200000"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="card border-2 border-red-500 mb-8 manager-result">
+<div class="text-center mb-6">
+<div class="text-red-400 uppercase tracking-[3px] text-sm">Marketing Result Monthly</div>
+<h3 class="text-5xl font-bold mt-4">EVALUASI MARKETING</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
+<div class="card result-card positive"><div class="result-label">Overall Status</div><div class="owner-status" id="mktOwnerStatus">-</div></div>
+<div class="card result-card primary"><div class="result-label">ROAS</div><div class="result-value" id="mktMonthlyRoas">0x</div></div>
+<div class="card result-card primary"><div class="result-label">Campaign Revenue</div><div class="result-value" id="mktTotalRevenue">Rp 0</div></div>
+<div class="card result-card"><div class="result-label">Cost / Lead</div><div class="result-value" id="mktMonthlyCostLead">Rp 0</div></div>
+<div class="card result-card"><div class="result-label">Conversion Rate</div><div class="result-value" id="mktMonthlyConvRate">0%</div></div>
+<div class="card result-card"><div class="result-label">Leads</div><div class="result-value" id="mktTotalLeads">0</div></div>
+<div class="card result-card"><div class="result-label">Reach</div><div class="result-value" id="mktTotalReach">0</div></div>
+<div class="card result-card"><div class="result-label">Engagement Rate</div><div class="result-value" id="mktMonthlyEngRate">0%</div></div>
+<div class="card result-card"><div class="result-label">Ads Spend</div><div class="result-value" id="mktTotalSpend">Rp 0</div></div>
+<div class="card result-card"><div class="result-label">Engagement</div><div class="result-value" id="mktTotalEngagement">0</div></div>
+</div>
+</div>
+
+<div class="card border-2 border-red-500 mt-10">
+<div class="text-center mb-6">
+<div class="text-red-400 uppercase tracking-[3px] text-sm">Marketing Summary Monthly</div>
+<h3 class="text-5xl font-bold mt-4">MARKETING INSIGHT</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Best Campaign</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Highest Traffic Source</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Next Strategy Plan</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+</div>
+</div>
+</section>
+
+
+
+<section class="slide">
+<div class="section-icon">🎪</div>
+<h2 class="title-font text-5xl mb-10">EVENT & MICE PERFORMANCE</h2>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Event Performance - Minggu 1</div>
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-gray-700">
+<th class="p-4">Nama Event</th>
+<th class="p-4">Pax</th>
+<th class="p-4">Revenue</th>
+<th class="p-4">Insight</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="p-4" contenteditable="true">Event 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+<tr><td class="p-4" contenteditable="true">Event 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+<tr><td class="p-4" contenteditable="true">Event 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Event Performance - Minggu 2</div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Event 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+<tr><td class="p-4" contenteditable="true">Event 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+<tr><td class="p-4" contenteditable="true">Event 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Event Performance - Minggu 3</div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Event 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+<tr><td class="p-4" contenteditable="true">Event 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+<tr><td class="p-4" contenteditable="true">Event 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card mb-8">
+<div class="text-2xl font-bold mb-6">Event Performance - Minggu 4</div>
+<table class="w-full">
+<tbody>
+<tr><td class="p-4" contenteditable="true">Event 1</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+<tr><td class="p-4" contenteditable="true">Event 2</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+<tr><td class="p-4" contenteditable="true">Event 3</td><td class="p-4" contenteditable="true">0</td><td class="p-4" contenteditable="true">Rp 0</td><td class="p-4" contenteditable="true">-</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card border-2 border-red-500 mt-10">
+<div class="text-center mb-6">
+<div class="text-red-400 uppercase tracking-[3px] text-sm">Monthly Event Summary</div>
+<h3 class="text-5xl font-bold mt-4">EVENT INSIGHT</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Best Event Performance</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Highest Revenue Event</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+<div class="card min-h-[180px]"><div class="text-gray-400 uppercase text-xs mb-3">Next Event Strategy</div><div contenteditable="true" class="mt-4 text-lg text-gray-300 min-h-[80px]"></div></div>
+</div>
+</div>
+</section>
+
+<section class="slide">
+<div class="section-icon">⭐</div>
+<h2 class="title-font text-5xl mb-10">CUSTOMER FEEDBACK HIGHLIGHT</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="card min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-4">Most Positive Feedback</div>
+<div contenteditable="true" class="text-lg text-gray-300 min-h-[120px]"></div>
+</div>
+
+<div class="card min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-4">Most Complaint</div>
+<div contenteditable="true" class="text-lg text-gray-300 min-h-[120px]"></div>
+</div>
+
+<div class="card min-h-[220px]">
+<div class="text-gray-400 uppercase text-xs mb-4">Improvement Notes</div>
+<div contenteditable="true" class="text-lg text-gray-300 min-h-[120px]"></div>
+</div>
+</div>
+</section>
+
+<section class="slide">
+<div class="section-icon">🚀</div>
+<h2 class="title-font text-5xl mb-10">NEXT MONTH PLAN</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="card min-h-[220px]">
+<div class="text-red-400 uppercase tracking-[3px] text-sm mb-4">Operational</div>
+<div contenteditable="true" class="text-gray-300 min-h-[120px]"></div>
+</div>
+
+<div class="card min-h-[220px]">
+<div class="text-red-400 uppercase tracking-[3px] text-sm mb-4">Marketing</div>
+<div contenteditable="true" class="text-gray-300 min-h-[120px]"></div>
+</div>
+
+<div class="card min-h-[220px]">
+<div class="text-red-400 uppercase tracking-[3px] text-sm mb-4">Sales</div>
+<div contenteditable="true" class="text-gray-300 min-h-[120px]"></div>
+</div>
+
+<div class="card min-h-[220px]">
+<div class="text-red-400 uppercase tracking-[3px] text-sm mb-4">Event Strategy</div>
+<div contenteditable="true" class="text-gray-300 min-h-[120px]"></div>
+</div>
+</div>
+</section>
+
+<section class="slide">
+<div class="section-icon">🏁</div>
+<h2 class="title-font text-5xl mb-10">MONTHLY CONCLUSION</h2>
+
+<div class="card min-h-[260px] border-2 border-red-500">
+<div class="text-red-400 uppercase tracking-[3px] text-sm mb-4">Executive Monthly Summary</div>
+<div contenteditable="true" class="text-xl text-gray-300 min-h-[160px]"></div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+<div class="card text-center min-h-[160px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Top Priority Next Month</div>
+<div class="text-2xl font-bold mt-6" contenteditable="true"></div>
+</div>
+
+<div class="card text-center min-h-[160px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Achievement Status</div>
+<div class="flex items-center justify-center gap-2 mt-6"><span class="text-green-400 text-xl">▲</span><div class="text-2xl font-bold text-green-400" contenteditable="true">ON TARGET</div></div>
+</div>
+
+<div class="card text-center min-h-[160px]">
+<div class="text-gray-400 uppercase text-xs mb-3">Prepared By</div>
+<div class="text-lg mt-6 text-gray-300" contenteditable="true">Outlet Manager</div>
+</div>
+</div>
+<div class="text-center text-gray-600 text-xs tracking-[3px] uppercase mt-16">
+Ludo Sports Kitchen & Coffee • Confidential Internal Report
+</div>
+</section>
+
+<script>
+let isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
+const PREVIEW_PASSCODE = "owner2026";
+const ADMIN_PASSCODE = "ludo2026";
+const AUTH_KEY = "ludo-dashboard-authenticated";
+
+function formatRupiah(number){
+  return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(number || 0);
+}
+
+function parseNumber(value){
+  return Number(String(value || "").replace(/\D/g, "")) || 0;
+}
+
+function formatInputValue(el){
+  const value = parseNumber(el.value);
+  el.value = value ? formatRupiah(value) : "0";
+}
+
+function unformatInputValue(el){
+  const value = parseNumber(el.value);
+  el.value = value ? String(value) : "";
+}
+
+function normalizeInputValue(el){
+  const value = parseNumber(el.value);
+  el.value = value ? String(value) : "";
+}
+
+function initLogin(){
+  const savedAdmin = sessionStorage.getItem("ludo-dashboard-admin");
+  const hasAuth = sessionStorage.getItem(AUTH_KEY) === "true";
+  const hasAdminQuery = new URLSearchParams(window.location.search).get("admin") === "1";
+
+  if(savedAdmin !== null && !hasAdminQuery){
+    isAdminMode = savedAdmin === "true";
+  }
+
+  if(isAdminMode || hasAuth){
+    if(isAdminMode){
+      sessionStorage.setItem(AUTH_KEY, "true");
+      sessionStorage.setItem("ludo-dashboard-admin", "true");
+    }
+    unlockDashboard();
+    setAccessMode();
+  }
+
+  const hint = document.getElementById("loginHint");
+  if(hint){
+    hint.innerText = isAdminMode ? "Masukkan passcode admin untuk input dan export report." : "Masukkan passcode admin atau preview untuk monitoring report.";
+  }
+
+  document.getElementById("loginPasscode")?.addEventListener("keydown", (event) => {
+    if(event.key === "Enter") loginDashboard();
+  });
+}
+
+function loginDashboard(){
+  const input = document.getElementById("loginPasscode");
+  const error = document.getElementById("loginError");
+  const value = String(input?.value || "").trim();
+
+  if(value === ADMIN_PASSCODE){
+    isAdminMode = true;
+    sessionStorage.setItem(AUTH_KEY, "true");
+    sessionStorage.setItem("ludo-dashboard-admin", "true");
+    unlockDashboard();
+    setAccessMode();
+    return;
+  }
+
+  if(value === PREVIEW_PASSCODE){
+    isAdminMode = false;
+    sessionStorage.setItem(AUTH_KEY, "true");
+    sessionStorage.setItem("ludo-dashboard-admin", "false");
+    unlockDashboard();
+    setAccessMode();
+    return;
+  }
+
+  if(error) error.innerText = isAdminMode ? "Passcode admin salah." : "Passcode preview salah.";
+}
+
+function unlockDashboard(){
+  document.body.classList.remove("locked");
+  const gate = document.getElementById("loginGate");
+  if(gate) gate.style.display = "none";
+  setAccessMode();
+}
+
+function prepareInputs(){
+  document.querySelectorAll("input").forEach((el) => {
+    if(el.dataset.ignoreSave !== undefined){
+      return;
+    }
+
+    if(el.dataset.textInput !== undefined){
+      el.type = "text";
+      el.autocomplete = "off";
+      return;
+    }
+
+    el.type = "text";
+    el.inputMode = "numeric";
+    el.pattern = "[0-9]*";
+    el.autocomplete = "off";
+    el.addEventListener("focus", () => {
+      if(isAdminMode){
+        unformatInputValue(el);
+        requestAnimationFrame(() => el.select());
+      }
+    });
+    el.addEventListener("blur", () => {
+      formatInputValue(el);
+      recalculateAll();
+      saveDashboard();
+    });
+    formatInputValue(el);
+  });
+}
+
+function prepareEditables(){
+  document.querySelectorAll("[contenteditable='true']").forEach((el, index) => {
+    el.dataset.editableIndex = String(index);
+  });
+}
+
+function setAccessMode(){
+  document.body.classList.toggle("admin-mode", isAdminMode);
+
+  document.querySelectorAll("input").forEach((el) => {
+    if(el.dataset.ignoreSave !== undefined){
+      return;
+    }
+    el.disabled = !isAdminMode;
+    if(isAdminMode){
+      el.classList.remove("input-disabled");
+    } else {
+      el.classList.add("input-disabled");
+    }
+  });
+
+  document.querySelectorAll("[data-editable-index]").forEach((el) => {
+    if(el.id === "lastUpdatedText"){
+      el.setAttribute("contenteditable", "false");
+      return;
+    }
+    if(el.dataset.autoTotal || el.closest(".card.text-center.min-h-\\[220px\\]")){
+      el.setAttribute("contenteditable", "false");
+      return;
+    }
+    el.setAttribute("contenteditable", isAdminMode ? "true" : "false");
+  });
+}
+
+function recalculateAll(){
+  calculateRevenue();
+  calculateCategory();
+  calculateItemSales();
+  calculateMarketingEffectiveness();
+}
+
+function formatPercent(value){
+  return (Number(value) || 0).toFixed(1) + "%";
+}
+
+function updateAchievementStatus(revenuePercent, targetRevenue){
+  const card = Array.from(document.querySelectorAll(".card")).find((el) =>
+    el.querySelector("div")?.innerText.trim().toUpperCase() === "ACHIEVEMENT STATUS"
+  );
+  if(!card) return;
+
+  const statusEl = card.querySelector(".text-2xl");
+  const iconEl = card.querySelector("span");
+  let detailEl = card.querySelector("#achievementDetail");
+
+  if(!detailEl){
+    detailEl = document.createElement("div");
+    detailEl.id = "achievementDetail";
+    detailEl.className = "text-gray-500 text-sm mt-3";
+    card.appendChild(detailEl);
+  }
+
+  if(statusEl){
+    statusEl.setAttribute("contenteditable", "false");
+    statusEl.classList.remove("text-green-400", "text-yellow-400", "text-red-400", "text-gray-400");
+  }
+
+  if(iconEl){
+    iconEl.classList.remove("text-green-400", "text-yellow-400", "text-red-400", "text-gray-400");
+  }
+
+  let status = "TARGET NOT SET";
+  let color = "text-gray-400";
+  let icon = "●";
+
+  if(targetRevenue > 0 && revenuePercent >= 100){
+    status = "ON TARGET";
+    color = "text-green-400";
+    icon = "▲";
+  } else if(targetRevenue > 0 && revenuePercent >= 80){
+    status = "NEAR TARGET";
+    color = "text-yellow-400";
+    icon = "●";
+  } else if(targetRevenue > 0){
+    status = "BELOW TARGET";
+    color = "text-red-400";
+    icon = "▼";
+  }
+
+  if(statusEl){
+    statusEl.innerText = status;
+    statusEl.classList.add(color);
+  }
+
+  if(iconEl){
+    iconEl.innerText = icon;
+    iconEl.classList.add(color);
+  }
+
+  detailEl.innerText = targetRevenue > 0 ? `${formatPercent(revenuePercent)} dari target revenue` : "Isi Target Revenue Bulanan";
+}
+
+function getSalesByItemSection(){
+  return Array.from(document.querySelectorAll("section")).find((section) =>
+    section.querySelector("h2")?.innerText.trim().toUpperCase().includes("PERFORMA SALES BY ITEM")
+  );
+}
+
+function getSalesItemRows(){
+  const section = getSalesByItemSection();
+  if(!section) return [];
+
+  return Array.from(section.querySelectorAll(".card.mb-8 tbody tr")).filter((row) => {
+    const cells = row.querySelectorAll("td");
+    return cells.length >= 4;
+  });
+}
+
+function getSalesItemRowType(row){
+  const card = row.closest(".card.mb-8");
+  const title = card?.querySelector(".text-xl")?.innerText.toUpperCase() || "";
+  return title.includes("NON POS") ? "nonpos" : "pos";
+}
+
+function prepareSalesItemRows(){
+  getSalesItemRows().forEach((row) => {
+    const cells = row.querySelectorAll("td");
+    cells[1].dataset.numberCell = "qty";
+    cells[2].dataset.numberCell = "price";
+    cells[3].dataset.autoTotal = "item";
+    cells[3].setAttribute("contenteditable", "false");
+  });
+}
+
+function formatCurrencyText(value){
+  return "Rp " + formatRupiah(value);
+}
+
+function formatEditableNumberCell(el){
+  if(!el || document.activeElement === el) return;
+  const value = parseNumber(el.innerText);
+  el.innerText = el.dataset.numberCell === "price" ? formatCurrencyText(value) : formatRupiah(value);
+}
+
+function calculateItemSales(){
+  const rows = getSalesItemRows();
+  const totalsByType = {
+    pos: new Map(),
+    nonpos: new Map()
+  };
+
+  rows.forEach((row) => {
+    const cells = row.querySelectorAll("td");
+    const type = getSalesItemRowType(row);
+    const itemName = cells[0]?.innerText.trim() || "";
+    const qty = parseNumber(cells[1]?.innerText);
+    const price = parseNumber(cells[2]?.innerText);
+    const total = qty * price;
+
+    formatEditableNumberCell(cells[1]);
+    formatEditableNumberCell(cells[2]);
+
+    if(cells[3]){
+      cells[3].innerText = formatCurrencyText(total);
+    }
+
+    if(itemName && !/^(non\s+pos\s+)?item\s+\d+$/i.test(itemName) && total > 0){
+      const current = totalsByType[type].get(itemName) || { name: itemName, total: 0, qty: 0 };
+      current.total += total;
+      current.qty += qty;
+      totalsByType[type].set(itemName, current);
+    }
+  });
+
+  updateTopSalesItems("pos", Array.from(totalsByType.pos.values()).sort((a, b) => b.total - a.total).slice(0, 3));
+  updateTopSalesItems("nonpos", Array.from(totalsByType.nonpos.values()).sort((a, b) => b.total - a.total).slice(0, 3));
+}
+
+function updateTopSalesItems(type, items){
+  const section = getSalesByItemSection();
+  if(!section) return;
+
+  const summary = section.querySelector(`.sales-summary-${type}`);
+  if(!summary) return;
+
+  const cards = Array.from(summary.querySelectorAll(".card.text-center.min-h-\\[220px\\]")).slice(0, 3);
+
+  cards.forEach((card, index) => {
+    const fields = card.querySelectorAll(".text-3xl, .text-red-400.text-xl, .text-gray-500");
+    const item = items[index];
+
+    if(fields[0]){
+      fields[0].setAttribute("contenteditable", "false");
+      fields[0].innerText = item ? item.name : "Nama Product";
+    }
+
+    if(fields[1]){
+      fields[1].setAttribute("contenteditable", "false");
+      fields[1].innerText = item ? formatCurrencyText(item.total) : "Rp 0";
+    }
+
+    if(fields[2]){
+      fields[2].setAttribute("contenteditable", "false");
+      fields[2].innerText = item ? "Qty " + formatRupiah(item.qty) : "Qty 0";
+    }
+  });
+}
+
+function calculateMarketingEffectiveness(){
+  let totalReach = 0;
+  let totalEngagement = 0;
+  let totalLeads = 0;
+  let totalSpend = 0;
+  let totalRevenue = 0;
+
+  for(let i=1;i<=4;i++){
+    const reach = parseNumber(document.getElementById(`mktReach${i}`)?.value);
+    const engagement = parseNumber(document.getElementById(`mktEngagement${i}`)?.value);
+    const leads = parseNumber(document.getElementById(`mktLeads${i}`)?.value);
+    const spend = parseNumber(document.getElementById(`mktSpend${i}`)?.value);
+    const revenue = parseNumber(document.getElementById(`mktRevenue${i}`)?.value);
+
+    totalReach += reach;
+    totalEngagement += engagement;
+    totalLeads += leads;
+    totalSpend += spend;
+    totalRevenue += revenue;
+
+    const engagementRate = reach > 0 ? (engagement / reach) * 100 : 0;
+    const conversionRate = reach > 0 ? (leads / reach) * 100 : 0;
+    const costPerLead = leads > 0 ? spend / leads : 0;
+    const roas = spend > 0 ? revenue / spend : 0;
+
+    setText(`mktEngRate${i}`, formatPercent(engagementRate));
+    setText(`mktConvRate${i}`, formatPercent(conversionRate));
+    setText(`mktCostLead${i}`, formatCurrencyText(costPerLead));
+    setText(`mktRoas${i}`, roas.toFixed(2) + "x");
+    setText(`mktStatus${i}`, getMarketingStatus(roas, costPerLead, leads));
+  }
+
+  setText("mktTotalReach", formatRupiah(totalReach));
+  setText("mktTotalEngagement", formatRupiah(totalEngagement));
+  setText("mktTotalLeads", formatRupiah(totalLeads));
+  setText("mktTotalSpend", formatCurrencyText(totalSpend));
+  setText("mktTotalRevenue", formatCurrencyText(totalRevenue));
+  setText("mktMonthlyEngRate", formatPercent(totalReach > 0 ? (totalEngagement / totalReach) * 100 : 0));
+  setText("mktMonthlyConvRate", formatPercent(totalReach > 0 ? (totalLeads / totalReach) * 100 : 0));
+  setText("mktMonthlyCostLead", formatCurrencyText(totalLeads > 0 ? totalSpend / totalLeads : 0));
+  setText("mktMonthlyRoas", (totalSpend > 0 ? totalRevenue / totalSpend : 0).toFixed(2) + "x");
+  setText("mktOwnerStatus", getMarketingStatus(totalSpend > 0 ? totalRevenue / totalSpend : 0, totalLeads > 0 ? totalSpend / totalLeads : 0, totalLeads));
+}
+
+function setText(id, value){
+  const el = document.getElementById(id);
+  if(el) el.innerText = value;
+}
+
+function updateLastUpdated(isoString){
+  const el = document.getElementById("lastUpdatedText");
+  if(!el) return;
+
+  if(!isoString){
+    el.innerText = "Last Updated : -";
+    return;
+  }
+
+  const date = new Date(isoString);
+  el.innerText = "Last Updated : " + new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date);
+}
+
+function exportDashboardPDF(){
+  window.print();
+}
+
+function exportDashboardExcel(){
+  const rows = [
+    ["Ludo Monthly Dashboard Export"],
+    ["Report Period", document.getElementById("reportPeriod")?.value || ""],
+    ["Last Updated", document.getElementById("lastUpdatedText")?.innerText || ""],
+    [],
+    ["Section", "Label", "Value"]
+  ];
+
+  document.querySelectorAll(".slide").forEach((section) => {
+    const sectionTitle = section.querySelector("h1,h2")?.innerText.trim() || "Dashboard";
+
+    section.querySelectorAll("input").forEach((input) => {
+      if(input.dataset.ignoreSave !== undefined) return;
+      const label = input.closest(".card")?.querySelector(".text-sm,.text-gray-400")?.innerText.trim() || input.id || "Input";
+      rows.push([sectionTitle, label, input.value]);
+    });
+
+    section.querySelectorAll("[id]").forEach((el) => {
+      if(el.matches("input") || el.id === "loginGate") return;
+      const value = el.innerText?.trim();
+      if(value && /^(kpi|grand|mkt|category|food|bev|promo|comp|disc|vouch|mice|nobar|total|avg|achievement)/i.test(el.id)){
+        rows.push([sectionTitle, el.id, value]);
+      }
+    });
+  });
+
+  const csv = rows.map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const period = (document.getElementById("reportPeriod")?.value || "monthly").replace(/[^\w-]+/g, "-");
+  link.href = url;
+  link.download = `ludo-dashboard-${period}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function getMarketingStatus(roas, costPerLead, leads){
+  if(leads <= 0) return "Belum ada lead";
+  if(roas >= 3) return "Efektif";
+  if(roas >= 1.5) return "Perlu optimasi";
+  if(costPerLead > 0) return "Biaya lead tinggi";
+  return "Perlu evaluasi";
+}
+
+function calculateRevenue() {
+  let grandPos = 0;
+  let grandNonPos = 0;
+  let grandBill = 0;
+
+  for(let i=1;i<=4;i++){
+    const pos = parseNumber(document.getElementById(`pos${i}`)?.value);
+    const nonpos = parseNumber(document.getElementById(`nonpos${i}`)?.value);
+    const bill = parseNumber(document.getElementById(`bill${i}`)?.value);
+
+    const total = pos + nonpos;
+    const avg = bill > 0 ? total / bill : 0;
+
+    grandPos += pos;
+    grandNonPos += nonpos;
+    grandBill += bill;
+
+    const totalEl = document.getElementById(`total${i}`);
+    const avgEl = document.getElementById(`avg${i}`);
+
+    if(totalEl) totalEl.innerText = 'Rp ' + formatRupiah(total);
+    if(avgEl) avgEl.innerText = 'Rp ' + formatRupiah(avg);
+  }
+
+  const grandRevenue = grandPos + grandNonPos;
+  const grandAvg = grandBill > 0 ? grandRevenue / grandBill : 0;
+
+  const targetRevenue = parseNumber(document.getElementById('targetRevenue')?.value);
+  const revenuePercent = targetRevenue > 0 ? ((grandRevenue / targetRevenue) * 100).toFixed(1) : 0;
+
+  document.getElementById('grandPos').innerText = 'Rp ' + formatRupiah(grandPos);
+  document.getElementById('grandNonPos').innerText = 'Rp ' + formatRupiah(grandNonPos);
+  document.getElementById('grandBill').innerText = formatRupiah(grandBill);
+  document.getElementById('grandAvg').innerText = 'Rp ' + formatRupiah(grandAvg);
+  document.getElementById('grandRevenueMain').innerText = 'Rp ' + formatRupiah(grandRevenue);
+
+  document.getElementById('kpiRevenue').innerText = revenuePercent + '%';
+  document.getElementById('kpiTotalRevenue').innerText = 'Rp ' + formatRupiah(grandRevenue);
+  document.getElementById('kpiBill').innerText = formatRupiah(grandBill);
+  document.getElementById('kpiAvg').innerText = 'Rp ' + formatRupiah(grandAvg);
+  updateAchievementStatus(Number(revenuePercent), targetRevenue);
+}
+
+function calculateCategory(){
+  const categories = ['food','bev','promo','comp','disc','vouch','mice','nobar'];
+  let grand = 0;
+
+  categories.forEach(cat=>{
+    let total = 0;
+
+    for(let i=1;i<=4;i++){
+      total += parseNumber(document.getElementById(`${cat}${i}`)?.value);
+    }
+
+    grand += total;
+
+    const el = document.getElementById(`${cat}Total`);
+    if(el){
+      el.innerText = 'Rp ' + formatRupiah(total);
+    }
+  });
+
+  document.getElementById('categoryGrand').innerText = 'Rp ' + formatRupiah(grand);
+}
+
+/* =========================
+   AUTOSAVE
+========================= */
+
+
+const STORAGE_KEY = "ludo-dashboard-autosave";
+
+async function saveDashboard() {
+  if(!isAdminMode) return;
+
+  const data = {};
+
+  document.querySelectorAll("input").forEach((el) => {
+    if(el.dataset.ignoreSave !== undefined){
+      return;
+    }
+
+    if (el.id) {
+      data[el.id] = el.dataset.textInput !== undefined ? el.value : String(parseNumber(el.value));
+    }
+  });
+
+  document.querySelectorAll("[data-editable-index]").forEach((el) => {
+    data[`editable_${el.dataset.editableIndex}`] = el.innerHTML;
+  });
+
+  data._lastUpdated = new Date().toISOString();
+  updateLastUpdated(data._lastUpdated);
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+  if(window.firebaseDB){
+    await window.firebaseSetDoc(
+      window.firebaseDoc(window.firebaseDB, "dashboard", "monthly-report"),
+      data
+    );
+  }
+}
+
+function applyDashboardData(data){
+  document.querySelectorAll("input").forEach((el) => {
+    if(el.dataset.ignoreSave !== undefined){
+      return;
+    }
+
+    if (el.id && data[el.id] !== undefined) {
+      if(isAdminMode && document.activeElement === el){
+        return;
+      }
+      if(el.dataset.textInput !== undefined){
+        el.value = data[el.id];
+      } else {
+        el.value = String(parseNumber(data[el.id]));
+        formatInputValue(el);
+      }
+    }
+  });
+
+  document.querySelectorAll("[data-editable-index]").forEach((el) => {
+    const key = `editable_${el.dataset.editableIndex}`;
+    if (data[key] !== undefined) {
+      if(isAdminMode && document.activeElement === el){
+        return;
+      }
+      el.innerHTML = data[key];
+    }
+  });
+
+  recalculateAll();
+  updateLastUpdated(data._lastUpdated);
+}
+
+function loadDashboard() {
+
+  const local = localStorage.getItem(STORAGE_KEY);
+
+  if(local){
+    applyDashboardData(JSON.parse(local));
+  }
+
+  if(window.firebaseDB){
+
+    window.firebaseOnSnapshot(
+      window.firebaseDoc(window.firebaseDB, "dashboard", "monthly-report"),
+      (docSnap) => {
+
+        if(docSnap.exists()){
+
+          const data = docSnap.data();
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+          applyDashboardData(data);
+        }
+      }
+    );
+  }
+}
+
+document.addEventListener("input", (event) => {
+  if(event.target && event.target.matches("input")){
+    if(event.target.dataset.ignoreSave !== undefined){
+      return;
+    }
+
+    if(event.target.dataset.textInput === undefined){
+      normalizeInputValue(event.target);
+    }
+
+    recalculateAll();
+  } else if(event.target && event.target.matches("[data-number-cell]")){
+    recalculateAll();
+  } else {
+    recalculateAll();
+  }
+  saveDashboard();
+});
+
+document.addEventListener("blur", (event) => {
+  if(event.target && event.target.matches("[data-number-cell]")){
+    formatEditableNumberCell(event.target);
+    recalculateAll();
+    saveDashboard();
+  }
+}, true);
+
+window.addEventListener("DOMContentLoaded", () => {
+  initLogin();
+  prepareEditables();
+  prepareSalesItemRows();
+  prepareInputs();
+  setAccessMode();
+  loadDashboard();
+  recalculateAll();
+});
+
+window.addEventListener("beforeunload", () => {
+  saveDashboard();
+});
+</script>
+
+</body>
+</html>
